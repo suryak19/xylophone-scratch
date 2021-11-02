@@ -1,8 +1,52 @@
 import 'package:flutter/material.dart';
 import 'package:english_words/english_words.dart';
+import 'package:audioplayers/audioplayers.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(const Xylophone());
+}
+
+class Xylophone extends StatelessWidget {
+  const Xylophone({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: Scaffold(
+        backgroundColor: Colors.grey,
+        body: SafeArea(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              buildKey(1,Colors.yellow),
+              buildKey(2,Colors.red),
+              buildKey(3,Colors.orange),
+              buildKey(4,Colors.green),
+              buildKey(5,Colors.pinkAccent),
+              buildKey(6,Colors.brown),
+              buildKey(7,Colors.teal),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Expanded buildKey(int key,Color color) {
+    return Expanded(
+      child: MaterialButton(
+        color: color,
+        onPressed: () {
+          playSound(key);
+        },
+      ),
+    );
+  }
+
+  void playSound(int count) {
+    final player = new AudioCache();
+    player.play('note$count.wav');
+  }
 }
 
 class MyApp extends StatelessWidget {
@@ -51,6 +95,8 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
 
+  static AudioCache player = AudioCache();
+
   void _incrementCounter() {
     setState(() {
       // This call to setState tells the Flutter framework that something has
@@ -64,6 +110,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    int num = int.parse('$_counter') % 7 + 1;
     // This method is rerun every time setState is called, for instance as done
     // by the _incrementCounter method above.
     //
@@ -94,15 +141,18 @@ class _MyHomePageState extends State<MyHomePage> {
           // center the children vertically; the main axis here is the vertical
           // axis because Columns are vertical (the cross axis would be
           // horizontal).
+
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             const Text(
               'You have pushed the button this many times:',
             ),
-            Text(nouns.elementAt(int.parse('$_counter')),
+            Text(
+              nouns.elementAt(num),
               // '$_counter',
               style: Theme.of(context).textTheme.headline4,
             ),
+            // player.play('note$num.wav')
           ],
         ),
       ),
